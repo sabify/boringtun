@@ -11,6 +11,12 @@ use std::os::unix::net::UnixDatagram;
 use std::process::exit;
 use tracing::Level;
 
+#[cfg(all(feature = "jemalloc", not(target_env = "msvc")))]
+use jemallocator::Jemalloc;
+#[cfg(all(feature = "jemalloc", not(target_env = "msvc")))]
+#[global_allocator]
+static GLOBAL: Jemalloc = Jemalloc;
+
 fn check_tun_name(_v: &str) -> Result<String, String> {
     #[cfg(any(target_os = "macos", target_os = "ios"))]
     {
